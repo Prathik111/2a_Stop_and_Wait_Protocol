@@ -11,30 +11,35 @@ To write a python program to perform stop and wait protocol
 ## PROGRAM
 ```python
 1.Client
-import socket 
-s=socket.socket() 
-s.bind(('localhost',8000))
-s.listen(5) 
-c,addr=s.accept() 
-while True: 
-    i=input("Enter a data: ") 
-    c.send(i.encode()) 
-    ack=c.recv(1024).decode() 
-    if ack: 
-        print(ack) 
-        continue 
-    else: 
-        c.close() 
-        break 
+import socket
+
+s = socket.socket()
+s.connect(('localhost', 8000))
+
+while True:
+    msg = input("Enter message: ")
+    s.send(msg.encode())            # Send to server
+
+    ack = s.recv(1024).decode()     
+    print("Server >", ack)          # Client prints ACK
+
 ```
 ```python
 2.server
-import socket 
-s=socket.socket() 
-s.connect(('localhost',8000)) 
-while True: 
-    print(s.recv(1024).decode()) 
-    s.send("Acknowledgement Recived".encode())
+import socket
+
+s = socket.socket()
+s.bind(('localhost', 8000))
+s.listen(1)
+c, addr = s.accept()
+
+while True:
+    msg = c.recv(1024).decode()
+    if not msg:
+        break
+    print("Client >", msg)          # Server prints client message
+    c.send("ACK".encode())          # Send acknowledgement
+
 ```
 ## OUTPUT
 <img width="813" height="322" alt="image" src="https://github.com/user-attachments/assets/4c8db691-c67e-4eac-bc96-29e290da1da7" />
